@@ -1,13 +1,13 @@
 .landing-container {
   font-family: Arial, sans-serif;
-  background-color: #f3f4f6;
+  background-color: #0e1326;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .landing-header {
-  background-color: #4f46e5;
+  background-color:#383067;
   color: white;
   padding: 2rem;
   text-align: center;
@@ -22,7 +22,7 @@
 }
 
 .card {
-  background: white;
+  background: rgb(72, 64, 102);
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   padding: 1.5rem;
@@ -37,7 +37,7 @@
 .landing-footer {
   text-align: center;
   padding: 1rem;
-  background-color: #e5e7eb;
+  background-color: #1f3057;
   margin-top: auto;
 }
 
