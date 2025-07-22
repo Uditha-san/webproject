@@ -9,7 +9,7 @@ const LandingPage = () => {
     navigate(path);
   };
 
-  // Card data for dynamic rendering
+
   const cards = [
     {
       path: '/dashboard',
