@@ -1,83 +1,213 @@
-.landing-main {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-  padding: 2rem;
+/* Global Reset */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fdf6e3;
+  color: #2c3e50;
 }
 
-
-
-.landing-container {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0e1326 0%, #1a1f38 100%);
+/* Landing Page Container */
+.landing-page {
+  padding: 60px 20px;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  text-align: center;
 }
 
-.landing-header {
-  background: linear-gradient(to right, #383067, #4f46e5);
-  color: rgb(224, 221, 255);
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+/* Heading */
+.landing-page h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.subheading {
+  font-size: 1.2rem;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+/* Search Bar */
+.search-bar {
+  width: 60%;
+  max-width: 400px;
+  padding: 12px;
+  margin-bottom: 40px;
+  border: 2px solid #d4af37;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow 0.3s;
+}
+
+.search-bar:focus {
+  box-shadow: 0 0 8px #d4af37;
+}
+
+/* Card Layout */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding-bottom: 100px;
 }
 
 .card {
-  background: rgba(75, 89, 153, 0.7);
-  border-radius: 12px;
-  padding: 1.5rem;
-  width: 280px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  width: 220px;
+  cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Neon Border Glow Effect */
-.card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, 
-    #4f46e5 0%, 
-    #8b5cf6 50%, 
-    #ec4899 100%);
-  z-index: -1;
-  border-radius: 14px;
-  filter: blur(8px);
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-
-.card:hover::before {
-  opacity: 0.8;
-  animation: pulseGlow 2s infinite ease-in-out;
+  border: 1px solid transparent;
 }
 
 .card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
-  border-color: rgba(79, 70, 229, 0.3);
+  transform: translateY(-5px);
+  border-color: #d4af37;
+  background-color: #fffef6;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 0.9; filter: blur(10px) brightness(1.2); }
+/* Card Content */
+.card-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: 1rem;
+  transition: transform 0.3s;
 }
 
-.landing-footer {
-  background: rgba(31, 48, 87, 0.8);
-  backdrop-filter: blur(5px);
-  color: rgb(120, 139, 175);
-  text-align: center;
-  font-size: 0.85rem;
-  padding: 0.5rem 0;
-  margin-top: auto;
+.card:hover .card-image {
+  transform: scale(1.05);
 }
 
+.card h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.about-us {
+  max-width: 800px;
+  margin: 40px auto 60px;
+  text-align: left;
+  color: #2c3e50;
+  font-size: 1rem;
+  line-height: 1.6;
+  background-color: #fffef6;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.about-us h2 {
+  margin-bottom: 16px;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* Review Button */
+.show-review-btn {
+  background: linear-gradient(45deg, #b99726, #d4af37);
+  border: none;
+  padding: 14px 36px;
+  color: #1a2733;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(212, 175, 55, 0.5);
+  transition: all 0.3s ease;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.show-review-btn:hover {
+  background: linear-gradient(45deg, #d4af37, #b99726);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.75);
+  transform: translateY(-3px);
+}
+
+.review-textarea {
+  width: 90%;              /* narrower width */
+  max-width: 500px;        /* max width so it doesn’t stretch too far */
+  border: 2px solid #d4af37;
+  border-radius: 15px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  font-family: 'Georgia', serif;
+  resize: vertical;
+  outline: none;
+  box-shadow: inset 0 0 8px #fff4b9;
+  background-color: #fffdf0;
+  color: #2c3e50;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  min-height: 80px;
+  max-height: 140px;
+  display: block;
+  margin: 0 auto;          /* center horizontally */
+}
+
+.review-submit-btn {
+  background: linear-gradient(45deg, #b99726, #d4af37);
+  border: none;
+  padding: 12px 28px;
+  color: #1a2733;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(212, 175, 55, 0.5);
+  transition: all 0.3s ease;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: block;
+  margin: 20px auto 0;    /* center and spacing from textarea */
+  width: auto;
+  min-width: 140px;
+}
+
+.review-submit-btn:hover {
+  background: linear-gradient(45deg, #d4af37, #b99726);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.75);
+  transform: translateY(-3px);
+}
+
+.modern-input {
+  width: 100%;
+  max-width: 350px;       /* not too wide */
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 2px solid #d4af37;  /* warm gold */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(212, 175, 55, 0.3);  /* gold shadow */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #5c4a00; /* dark golden text */
+  background-color: #fffbea; /* very light yellow background */
+}
+
+.modern-input::placeholder {
+  color: #b99726; /* subtle golden placeholder */
+}
+
+.modern-input:focus {
+  outline: none;
+  border-color: #b99726;    /* deeper gold on focus */
+  box-shadow: 0 4px 10px rgba(185, 151, 38, 0.6);
+  background-color: #fff9d6; /* soft light yellow */
+  color: #6b5500; /* slightly darker text */
+}
