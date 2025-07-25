@@ -1,4 +1,5 @@
 // index.js
+require('dotenv').config();
 const express = require("express");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -9,7 +10,7 @@ const PORT = 3000;
 app.use(express.json());
 
 
-const uri = "mongodb+srv://udithasandeepa8:uditha2004@cluster0.y2um6xr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
