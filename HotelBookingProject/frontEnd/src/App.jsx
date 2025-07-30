@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from './components/Navbar.jsx';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home.jsx';
@@ -11,14 +11,18 @@ import Layout from './pages/hotelOwner/Layout.jsx';
 import Dashboard from './pages/hotelOwner/Dashboard.jsx';
 import AddRoom from './pages/hotelOwner/AddRoom.jsx';
 import ListRoom from './pages/hotelOwner/ListRoom.jsx';
+import LoginForm from './components/LoginForm.jsx';
+import RegistrationForm from './components/RegistrationForm.jsx';
 
 
 const App = () => {
-
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const isOwnerPath = useLocation().pathname.includes("owner"); 
+  
   return (
     <div>
-      {!isOwnerPath && <Navbar />} 
+      {!isOwnerPath && <Navbar onLoginClick={() => setShowLoginModal(true)} onRegisterClick={() => setShowRegisterModal(true)} />} 
       {false && <HotelReg />}
       <div className='min-h-[70vh]'>
         <Routes>
@@ -37,6 +41,28 @@ const App = () => {
 
       </div>
       <Footer />
+      
+      {/* Login Modal */}
+      {showLoginModal && (
+        <LoginForm 
+          onClose={() => setShowLoginModal(false)}
+          onSwitchToRegister={() => {
+            setShowLoginModal(false);
+            setShowRegisterModal(true);
+          }}
+        />
+      )}
+      
+      {/* Registration Modal */}
+      {showRegisterModal && (
+        <RegistrationForm 
+          onClose={() => setShowRegisterModal(false)}
+          onSwitchToLogin={() => {
+            setShowRegisterModal(false);
+            setShowLoginModal(true);
+          }}
+        />
+      )}
     </div>
   )
 }

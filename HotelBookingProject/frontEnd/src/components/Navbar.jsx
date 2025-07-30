@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Link,useLocation,useNavigate} from 'react-router-dom';
 import { assets } from '../assets/assets';
-import { useClerk, useUser,UserButton} from '@clerk/clerk-react';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const BookIcon = ()=>(
     <svg className="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" >
     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4" />
 </svg>
 )
-const Navbar = () => {
+const Navbar = ({ onLoginClick, onRegisterClick }) => {
     const navLinks = [
         { name: 'Home', path: '/' },
         { name: 'Hotels', path: '/rooms' },
@@ -20,8 +20,7 @@ const Navbar = () => {
 
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { openSignIn } = useClerk();
-    const { user } = useUser();
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -69,14 +68,15 @@ const Navbar = () => {
                     <img src={assets.searchIcon} alt="search" className={` ${isScrolled && "invert"} h-7 transition-all duration-500`} />
 
                     {user ? 
-                    (<UserButton>
-                        <UserButton.MenuItems>
-                            <UserButton.Action label ="My Bookinngs" labelIcon={<BookIcon/>} onClick=
-                            {()=> navigate('/my-bookings')} />
-                        </UserButton.MenuItems>
-                    </UserButton>)
+                    (<div className="flex items-center gap-2">
+                        <button onClick={() => navigate('/my-bookings')} className="flex items-center gap-1 text-sm">
+                            <BookIcon />
+                            My Bookings
+                        </button>
+                        <button onClick={logout} className="text-sm">Logout</button>
+                    </div>)
                 :
-                (<button onClick={openSignIn} className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}>
+                (<button onClick={onLoginClick} className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}>
                         Login
                     </button>)}
 
@@ -88,12 +88,10 @@ const Navbar = () => {
                 
                 <div className="flex items-center gap-3 md:hidden">
 
-                    {user && <UserButton>
-                        <UserButton.MenuItems>
-                            <UserButton.Action label ="My Bookinngs" labelIcon={<BookIcon/>} onClick=
-                            {()=> navigate('/my-bookings')} />
-                        </UserButton.MenuItems>
-                    </UserButton>}
+                    {user && <button onClick={() => navigate('/my-bookings')} className="flex items-center gap-1 text-sm">
+                        <BookIcon />
+                        My Bookings
+                    </button>}
                     <img onClick={() => setIsMenuOpen(!isMenuOpen)} src={assets.menuIcon} alt="menu" className={` ${isScrolled && "invert"} h-4`} />
                 </div>
 
@@ -114,7 +112,7 @@ const Navbar = () => {
                         Dashboard
                     </button>}
 
-                    {!user && <button onClick={openSignIn} className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
+                    {!user && <button onClick={onLoginClick} className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
                         Login
                     </button>}
                 </div>
