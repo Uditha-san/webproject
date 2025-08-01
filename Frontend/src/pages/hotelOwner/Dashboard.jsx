@@ -7,7 +7,7 @@ const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(dashboardDummyData)
 
   return (
-    <div>
+    <div className="mt-24">
       <Title align='left' font='outfit' title="Dashboard" subtitle="
       Monitor room listings, track booking and analyze revenue-all in one place."/>
 
@@ -20,7 +20,7 @@ const Dashboard = () => {
 
         <div className='flex flex-col sm:ml-4 font-medium'>
           <p className='text-blue-500 text-lg'>Total Bookings</p>
-          <p className='text-natural-400 text-base'>{dashboardData.totalBookings}</p>
+          <p className='text-gray-600 text-base'>{dashboardData.totalBookings}</p>
         </div>
 
         </div>
@@ -33,7 +33,7 @@ const Dashboard = () => {
 
         <div className='flex flex-col sm:ml-4 font-medium'>
           <p className='text-blue-500 text-lg'>Total Revenue</p>
-          <p className='text-natural-400 text-base'>Rs. {dashboardData.totalRevenue}</p>
+          <p className='text-gray-600 text-base'>Rs. {dashboardData.totalRevenue}</p>
         </div>
 
         </div>
@@ -65,7 +65,7 @@ const Dashboard = () => {
                   {item.user.username}
                 </td>
 
-                <td className='py-3 px-4 text-gray-700 border-t border-gray-300 max-sm-hidden'>
+                <td className='py-3 px-4 text-gray-700 border-t border-gray-300 max-sm:hidden'>
                   {item.room.roomType}
                 </td>
 

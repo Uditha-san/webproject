@@ -13,6 +13,8 @@ import AddRoom from './pages/hotelOwner/AddRoom.jsx';
 import ListRoom from './pages/hotelOwner/ListRoom.jsx';
 import LoginForm from './components/LoginForm.jsx';
 import RegistrationForm from './components/RegistrationForm.jsx';
+import About from './pages/About.jsx';
+import Experience from './pages/Experience.jsx';
 
 
 const App = () => {
@@ -30,12 +32,13 @@ const App = () => {
           <Route path='/rooms' element={<AllRooms />} />
           <Route path='/rooms/:id' element={<RoomDetails />} />
           <Route path='/my-bookings' element={<MyBookings />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/experience' element={<Experience />} />
+          <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/owner' element= {<Layout/>}>
-
-          <Route index element={<Dashboard />} />
-          <Route path="add-room" element={<AddRoom />} />
-          <Route path="list-room" element={<ListRoom />} />
-
+            <Route index element={<Dashboard />} />
+            <Route path="add-room" element={<AddRoom />} />
+            <Route path="list-room" element={<ListRoom />} />
           </Route>
         </Routes>
 
