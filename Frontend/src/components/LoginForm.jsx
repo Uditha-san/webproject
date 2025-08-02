@@ -134,7 +134,7 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
         </button>
         
         <div className="p-8">
-          {/* Enhanced background elements with stronger blur */}
+          {/* Enhanced background elements  */}
           <div className="absolute inset-0 overflow-hidden rounded-2xl -z-10">
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200/40 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
             <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-200/40 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
