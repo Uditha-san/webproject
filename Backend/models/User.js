@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
     dateOfBirth: { type: Date },
 
     recentSearchedCities: [{ type: String }],
+
+    // email verification
     isVerified: { type: Boolean, default: false },
     emailVerificationToken: { type: String },
     emailVerificationExpires: { type: Date },

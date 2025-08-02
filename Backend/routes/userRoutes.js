@@ -9,6 +9,8 @@ import {
   register
 } from '../controllers/authController.js';
 
+import { verifyEmail } from '../controllers/authController.js';
+
 const userRouter = express.Router();
 
 // Auth routes
@@ -18,6 +20,8 @@ userRouter.post('/login', login);
 // User routes (protected)
 userRouter.get('/', protect(), getUserData);
 userRouter.post('/store-recent-search', protect(), storeRecentSearchCities);
+
+userRouter.get('/verify-email', verifyEmail);
 
 
 export default userRouter;
