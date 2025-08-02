@@ -79,35 +79,46 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Here you would typically make an API call to authenticate the user
-      console.log('Login data:', formData);
-      
-      // Simulate successful login
-      const userData = {
-        id: 1,
-        email: formData.email,
-        name: formData.email.split('@')[0] // Simple name generation
-      };
-      
-      login(userData);
-      
-      // Show success message and close modal
-      alert('Login successful! Welcome back.');
-      onClose();
-      
-      // Reset form
-      setFormData({
-        email: '',
-        password: '',
-        rememberMe: false
+      // 1. Make a real API call to your backend login endpoint
+      const response = await fetch('http://localhost:3000/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
       });
+
+      const data = await response.json();
+
+      // 2. Check if the backend responded with an error
+      if (!response.ok) {
+        // Use the error message from the backend if available
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      // 3. If login is successful, use the real data from the backend
+      if (data.success) {
+        // Call the login function from your AuthContext with the token and user data
+        login(data.token, data.user); 
+        
+        alert('Login successful! Welcome back.');
+        onClose();
+        
+        // Reset form
+        setFormData({
+          email: '',
+          password: '',
+          rememberMe: false
+        });
+      }
       
     } catch (error) {
       console.error('Login error:', error);
-      alert('Login failed. Please check your credentials and try again.');
+      // Display the actual error message from the backend or a generic one
+      alert(`Login failed: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
