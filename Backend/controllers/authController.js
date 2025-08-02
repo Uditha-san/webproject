@@ -65,9 +65,47 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
+    // Check if account is locked
+    if (user.blockUntil && user.blockUntil > Date.now()) {
+      const remainingTime = Math.ceil((user.blockUntil - Date.now()) / (1000 * 60 * 60));
+      return res.status(423).json({ 
+        success: false, 
+        message: `Account is locked due to too many failed login attempts. Try again in ${remainingTime} hours.`,
+        isLocked: true,
+        remainingTime: remainingTime
+      });
+    }
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    
     if (!isPasswordCorrect) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      // Increment login attempts
+      await user.incLoginAttempts();
+      
+      // Reload user to get updated attempt count
+      const updatedUser = await User.findById(user._id);
+      
+      // Check if account is now locked
+      if (updatedUser.blockUntil && updatedUser.blockUntil > Date.now()) {
+        return res.status(423).json({ 
+          success: false, 
+          message: 'Too many failed login attempts. Account locked for 24 hours.',
+          isLocked: true,
+          remainingTime: 24
+        });
+      }
+      
+      const attemptsLeft = 5 - updatedUser.loginAttempts;
+      return res.status(401).json({ 
+        success: false, 
+        message: `Invalid credentials. ${attemptsLeft} attempts remaining before account lockout.`,
+        attemptsLeft: attemptsLeft
+      });
+    }
+
+    // Successful login - reset login attempts
+    if (user.loginAttempts > 0) {
+      await user.resetLoginAttempts();
     }
 
     const token = generateToken(user._id, user.role);
