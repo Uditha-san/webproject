@@ -188,6 +188,24 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
             </div>
             
             <form className="mt-8 space-y-6 animate-fadeInUp animation-delay-300" onSubmit={handleSubmit}>
+              {/* Warning message for low attempts */}
+              {attemptsLeft !== null && attemptsLeft <= 2 && !isLocked && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg animate-shake">
+                  <p className="text-red-600 text-sm text-center">
+                    ⚠️ Warning: Only {attemptsLeft} login attempts remaining before account lockout!
+                  </p>
+                </div>
+              )}
+              
+              {/* Account locked message */}
+              {isLocked && (
+                <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-lg">
+                  <p className="text-red-700 text-sm text-center">
+                    🔒 Account is locked due to too many failed attempts. Please try again later.
+                  </p>
+                </div>
+              )}
+              
               <div className="space-y-4">
                 <div className="animate-slideInLeft animation-delay-400">
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
