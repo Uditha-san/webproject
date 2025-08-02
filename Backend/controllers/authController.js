@@ -7,16 +7,17 @@ import generateToken from '../utils/generateToken.js';
 
 // Register
 export const register = async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const { firstName, lastName, email, password, phone, dateOfBirth } = req.body;
+  const username = `${firstName} ${lastName}`; // Create username from first and last name
 
-  if (!username || !email || !password) {
-    return res.status(400).json({ success: false, message: 'All fields are required' });
+  if (!firstName || !lastName || !email || !password) {
+    return res.status(400).json({ success: false, message: 'Required fields are missing' });
   }
 
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ success: false, message: 'User already exists' });
+      return res.status(409).json({ success: false, message: 'User with this email already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,8 +26,9 @@ export const register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role,
-      recentSearchedCities: [],
+      // ADDED: Save new fields to the database
+      phone,
+      dateOfBirth,
     });
 
     await newUser.save();
@@ -35,7 +37,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'User registered',
+      message: 'User registered successfully',
       token,
       user: {
         _id: newUser._id,

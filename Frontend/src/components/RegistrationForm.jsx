@@ -143,54 +143,40 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
-
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulate successful registration
-      const userData = {
-        id: 1,
-        email: formData.email,
-        name: `${formData.firstName} ${formData.lastName}`,
-        firstName: formData.firstName,
-        lastName: formData.lastName
-      };
-      
-      login(userData);
-      
-      alert('Registration successful! Welcome to our platform.');
-      onClose();
-      
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        phone: '',
-        dateOfBirth: '',
-        acceptTerms: false
+      // 1. Make a real API call to the backend registration endpoint
+      const response = await fetch('http://localhost:3000/api/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          dateOfBirth: formData.dateOfBirth,
+        }),
       });
-      
-      // Reset password validation state
-      setPasswordValidation({
-        minLength: false,
-        hasUpper: false,
-        hasLower: false,
-        hasNumber: false,
-        hasSpecial: false,
-      });
-      
+
+      const data = await response.json();
+
+      // 2. Check for errors from the backend
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to register');
+      }
+
+      // 3. If registration is successful, log the user in
+      if (data.success) {
+        login(data.token, data.user); // Use the login function from AuthContext
+        alert('Registration successful! Welcome.');
+        onClose();
+      }
     } catch (error) {
       console.error('Registration error:', error);
-      alert('Registration failed. Please try again.');
+      alert(`Registration failed: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
