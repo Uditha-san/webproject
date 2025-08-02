@@ -75,10 +75,10 @@ export const assets = {
 }
 
 export const cities = [
-    "Colombo",
-    "Negombo",
-    "Panadura",
-    "Kelaniya",
+    "Single Bed",
+    "Double Bed",
+    "Trible Bed",
+    
 ];
 
 // Exclusive Offers Dummy Data

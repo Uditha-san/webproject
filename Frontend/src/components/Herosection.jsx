@@ -18,7 +18,7 @@ const Herosection = () => {
             <div>
                 <div className='flex items-center gap-2'>
                     <img src={assets.locationIcon} alt="destination icon" className='h-4'/>
-                    <label htmlFor="destinationInput">Destination</label>
+                    <label htmlFor="destinationInput">Rooms</label>
                 </div>
                 <input list='destinations' id="destinationInput" type="text" className=" rounded border border-gray-200 px-3 py-1.5 mt-1.5 text-sm outline-none" placeholder="Type here" required />
                 <datalist id='destinations'>
