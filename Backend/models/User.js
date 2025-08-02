@@ -7,10 +7,10 @@ const userSchema = new mongoose.Schema({
     email: {type: String, required: true},
     password: { type: String, required: true ,select: false},
     role: {type: String, enum: ["user", "hotelOwner"], default: "user"},
-    recentSearchedCities: [{type: String, required: true}],
+    recentSearchedCities: [String],
 
 
-    // 🔒 New fields for email verification
+    // New fields for email verification
   isVerified: { type: Boolean, default: false },
   emailVerificationToken: { type: String },
   emailVerificationExpires: { type: Date }

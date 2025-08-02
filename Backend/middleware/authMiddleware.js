@@ -20,7 +20,10 @@ export const protect = (roles = []) => {
         return res.status(403).json({ message: 'Access forbidden' });
       }
 
-      req.user = user;
+      req.user = {
+        ...user.toObject(),
+        id: user._id.toString(),
+      };
       next();
     } catch (err) {
       res.status(401).json({ message: 'Invalid or expired token' });
