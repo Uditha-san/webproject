@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets';
 import { useAuth } from '../context/AuthContext.jsx';
 import PasswordStrengthIndicator from './PasswordStrengthIndicator.jsx';
+import FadePasswordStrengthIndicator from './FadePasswordStrengthIndicator.jsx';
 
 const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -306,10 +307,8 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
                   Must be 8+ characters with uppercase, lowercase, and number
                 </p>
                 
-                {/* Password Strength Indicator */}
-                {formData.password && (
-                  <PasswordStrengthIndicator validation={passwordValidation} />
-                )}
+                {/* Password Strength Indicator with fade-out */}
+                <FadePasswordStrengthIndicator show={formData.password.length > 0 && document.activeElement && document.activeElement.name === 'password'} validation={passwordValidation} />
               </div>
 
               <div className="animate-slideInLeft animation-delay-800">

@@ -75,10 +75,10 @@ export const assets = {
 }
 
 export const cities = [
-    "Colombo",
-    "Negombo",
-    "Panadura",
-    "Kelaniya",
+    "Single Bed",
+    "Double Bed",
+    "Trible Bed",
+    
 ];
 
 // Exclusive Offers Dummy Data
@@ -113,19 +113,44 @@ export const roomCommonData = [
 ];
 
 // User Dummy Data
-export const userDummyData = {
-    "_id": "user_2unqyL4diJFP1E3pIBnasc7w8hP",
-    "username": "Great Stack",
-    "email": "user.greatstack@gmail.com",
-    "image": "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
-    "role": "hotelOwner",
-    "createdAt": "2025-03-25T09:29:16.367Z",
-    "updatedAt": "2025-04-10T06:34:48.719Z",
-    "__v": 1,
-    "recentSearchedCities": [
-        "Colombo",
-    ]
-}
+export const userDummyData = [
+  {
+    _id: "user_2unqyL4diJFP1E3pIBnasc7w8hP",
+    username: "Dilshan wijesooriya",
+    email: "user.greatstack@gmail.com",
+    image:
+      "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
+    role: "hotelOwner",
+    createdAt: "2025-03-25T09:29:16.367Z",
+    updatedAt: "2025-04-10T06:34:48.719Z",
+    __v: 1,
+    recentSearchedCities: ["Colombo"],
+  },
+  {
+    _id: "user_2unqyL4diJFP1E3pIBnasc7w8hP",
+    username: "Akila jayawardhana",
+    email: "user.greatstack@gmail.com",
+    image:
+      "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
+    role: "hotelOwner",
+    createdAt: "2025-03-25T09:29:16.367Z",
+    updatedAt: "2025-04-10T06:34:48.719Z",
+    __v: 1,
+    recentSearchedCities: ["Colombo"],
+  },
+  {
+    _id: "user_2unqyL4diJFP1E3pIBnasc7w8hP",
+    username: "Shane Daniel",
+    email: "user.greatstack@gmail.com",
+    image:
+      "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
+    role: "hotelOwner",
+    createdAt: "2025-03-25T09:29:16.367Z",
+    updatedAt: "2025-04-10T06:34:48.719Z",
+    __v: 1,
+    recentSearchedCities: ["Colombo"],
+  },
+];
 
 // Hotel Dummy Data
 export const hotelDummyData = {
@@ -169,7 +194,7 @@ export const roomsDummyData = [
     {
         "_id": "67f76406197ac559e4089b82",
         "hotel": hotelDummyData,
-        "roomType": "Double Bed",
+        "roomType": "Single Bed",
         "pricePerNight": 16000,
         "amenities": ["Free WiFi", "Free Breakfast", "Room Service"],
         "images": [roomImg3, roomImg4, roomImg1, roomImg2],
@@ -198,7 +223,7 @@ export const roomsDummyData = [
 export const userBookingsDummyData = [
     {
         "_id": "67f76839994a731e97d3b8ce",
-        "user": userDummyData,
+        "user": userDummyData[0],
         "room": roomsDummyData[1],
         "hotel": hotelDummyData,
         "checkInDate": "2025-04-30T00:00:00.000Z",
@@ -214,7 +239,7 @@ export const userBookingsDummyData = [
     },
     {
         "_id": "67f76829994a731e97d3b8c3",
-        "user": userDummyData,
+        "user": userDummyData[1],
         "room": roomsDummyData[0],
         "hotel": hotelDummyData,
         "checkInDate": "2025-04-27T00:00:00.000Z",
@@ -230,7 +255,7 @@ export const userBookingsDummyData = [
     },
     {
         "_id": "67f76810994a731e97d3b8b4",
-        "user": userDummyData,
+        "user": userDummyData[2],
         "room": roomsDummyData[3],
         "hotel": hotelDummyData,
         "checkInDate": "2025-04-11T00:00:00.000Z",
