@@ -2,11 +2,16 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
+import { validationResult } from 'express-validator';
 
 
 
 // Register
 export const register = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
   const { firstName, lastName, email, password, phone, dateOfBirth } = req.body;
   const username = `${firstName} ${lastName}`; // Create username from first and last name
 
