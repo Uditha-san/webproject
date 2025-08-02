@@ -1,0 +1,452 @@
+openapi: 3.0.0
+info:
+  title: Hotel Booking API
+  version: 1.0.0
+  description: API for hotel bookings, room management, and user authentication.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      required: [_id, name, email, role]
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+
+    Hotel:
+      type: object
+      required: [_id, name, location]
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        location:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+
+    Room:
+      type: object
+      required: [_id, hotelId, price, isAvailable]
+      properties:
+        _id:
+          type: string
+        hotelId:
+          type: string
+        price:
+          type: number
+        isAvailable:
+          type: boolean
+        images:
+          type: array
+          items:
+            type: string
+
+    Booking:
+      type: object
+      required: [_id, userId, roomId, checkIn, checkOut]
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        roomId:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+paths:
+
+  /user/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        201:
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /user/login:
+    post:
+      tags: [Auth]
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /user:
+    get:
+      tags: [User]
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /user/store-recent-search:
+    post:
+      tags: [User]
+      summary: Store recent cities
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cities]
+              properties:
+                cities:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Cities stored
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /hotel:
+    post:
+      tags: [Hotel]
+      summary: Register hotel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, location]
+              properties:
+                name:
+                  type: string
+                location:
+                  type: string
+      responses:
+        201:
+          description: Hotel created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hotel'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /room:
+    post:
+      tags: [Room]
+      summary: Create room
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [hotelId, price]
+              properties:
+                hotelId:
+                  type: string
+                price:
+                  type: number
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        201:
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags: [Room]
+      summary: Get all rooms
+      responses:
+        200:
+          description: Room list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+
+  /room/owner:
+    get:
+      tags: [Room]
+      summary: Owner's rooms
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Room list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /room/toggle-availability:
+    post:
+      tags: [Room]
+      summary: Toggle availability
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [roomId]
+              properties:
+                roomId:
+                  type: string
+      responses:
+        200:
+          description: Toggled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /booking/check-availability:
+    post:
+      tags: [Booking]
+      summary: Check availability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [roomId, checkIn, checkOut]
+              properties:
+                roomId:
+                  type: string
+                checkIn:
+                  type: string
+                  format: date
+                checkOut:
+                  type: string
+                  format: date
+      responses:
+        200:
+          description: Availability result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isAvailable:
+                    type: boolean
+
+  /booking/book:
+    post:
+      tags: [Booking]
+      summary: Book a room
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [roomId, checkIn, checkOut]
+              properties:
+                roomId:
+                  type: string
+                checkIn:
+                  type: string
+                  format: date
+                checkOut:
+                  type: string
+                  format: date
+      responses:
+        201:
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /booking/user:
+    get:
+      tags: [Booking]
+      summary: User bookings
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Booking list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /booking/hotel:
+    get:
+      tags: [Booking]
+      summary: Hotel bookings
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Booking list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
