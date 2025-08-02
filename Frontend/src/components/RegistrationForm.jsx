@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets';
 import { useAuth } from '../context/AuthContext.jsx';
+import PasswordStrengthIndicator from './PasswordStrengthIndicator.jsx';
 
 const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,13 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordValidation, setPasswordValidation] = useState({
+    minLength: false,
+    hasUpper: false,
+    hasLower: false,
+    hasNumber: false,
+    hasSpecial: false,
+  });
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -67,10 +75,12 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
     // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain uppercase, lowercase, and number';
+    } else {
+      // Check if all password validation criteria are met
+      const allCriteriaMet = Object.values(passwordValidation).every(Boolean);
+      if (!allCriteriaMet) {
+        newErrors.password = 'Password must meet all requirements';
+      }
     }
 
     // Confirm Password validation
@@ -110,6 +120,17 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+
+    // Real-time password validation
+    if (name === 'password') {
+      setPasswordValidation({
+        minLength: value.length >= 8,
+        hasUpper: /[A-Z]/.test(value),
+        hasLower: /[a-z]/.test(value),
+        hasNumber: /\d/.test(value),
+        hasSpecial: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value),
+      });
+    }
 
     // Clear error when user starts typing
     if (errors[name]) {
@@ -156,6 +177,15 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
         phone: '',
         dateOfBirth: '',
         acceptTerms: false
+      });
+      
+      // Reset password validation state
+      setPasswordValidation({
+        minLength: false,
+        hasUpper: false,
+        hasLower: false,
+        hasNumber: false,
+        hasSpecial: false,
       });
       
     } catch (error) {
@@ -289,6 +319,11 @@ const RegistrationForm = ({ onClose, onSwitchToLogin }) => {
                 <p className="text-xs text-gray-500 mt-1">
                   Must be 8+ characters with uppercase, lowercase, and number
                 </p>
+                
+                {/* Password Strength Indicator */}
+                {formData.password && (
+                  <PasswordStrengthIndicator validation={passwordValidation} />
+                )}
               </div>
 
               <div className="animate-slideInLeft animation-delay-800">
