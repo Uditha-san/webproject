@@ -15,7 +15,8 @@ import LoginForm from './components/LoginForm.jsx';
 import RegistrationForm from './components/RegistrationForm.jsx';
 import About from './pages/About.jsx';
 import Experience from './pages/Experience.jsx';
-
+import VerifyEmail from './components/VerifyEmail.jsx';
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -24,11 +25,14 @@ const App = () => {
   
   return (
     <div>
+
+      <Toaster position="top-center" />
       {!isOwnerPath && <Navbar onLoginClick={() => setShowLoginModal(true)} onRegisterClick={() => setShowRegisterModal(true)} />} 
       {false && <HotelReg />}
       <div className='min-h-[70vh]'>
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/verify-email' element={<VerifyEmail />} />
           <Route path='/rooms' element={<AllRooms />} />
           <Route path='/rooms/:id' element={<RoomDetails />} />
           <Route path='/my-bookings' element={<MyBookings />} />
