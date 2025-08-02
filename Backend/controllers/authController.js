@@ -2,8 +2,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
-
-
+import crypto from 'crypto';
+import sendEmail from '../utils/sendEmail.js';
 
 // Register
 export const register = async (req, res) => {
@@ -22,6 +22,9 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpires = new Date(Date.now() + 60 * 60 * 1000);
+
     const newUser = new User({
       username,
       email,
@@ -29,9 +32,33 @@ export const register = async (req, res) => {
       // ADDED: Save new fields to the database
       phone,
       dateOfBirth,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpires: verificationExpires,
+      isVerified: false,
     });
 
     await newUser.save();
+
+    // Send verification email
+    const verifyURL = `http://localhost:5173/verify-email?token=${verificationToken}`;
+    const html = `
+      <h2>Email Verification</h2>
+      <p>Click below to verify your account:</p>
+      <a href="${verifyURL}">Verify Email</a>
+      <p>This link will expire in 1 hour.</p>
+    `;
+    await sendEmail(email, 'Verify your email', html);
+
+    res.status(201).json({
+      success: true,
+      message: 'Registration successful. Check your email to verify your account.'
+    });
+
+    
+  //} catch (err) {
+   // res.status(500).json({ success: false, message: 'Server error', error: err.message });
+  //}
+
 
     const token = generateToken(newUser._id, newUser.role);
 
@@ -121,6 +148,37 @@ export const login = async (req, res) => {
         role: user.role,
       },
     });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error', error: err.message });
+  }
+};
+
+
+// Email Verification
+export const verifyEmail = async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ success: false, message: 'Token is required' });
+  }
+
+  try {
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+    }
+
+    user.isVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Email verified successfully. You can now log in.' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
