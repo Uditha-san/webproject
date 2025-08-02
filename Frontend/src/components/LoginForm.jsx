@@ -13,6 +13,8 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [attemptsLeft, setAttemptsLeft] = useState(null);
+  const [isLocked, setIsLocked] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -95,16 +97,38 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
 
       // 2. Check if the backend responded with an error
       if (!response.ok) {
-        // Use the error message from the backend if available
-        throw new Error(data.message || 'Something went wrong');
+        // Handle different types of errors
+        if (response.status === 423) {
+          // Account locked
+          setIsLocked(true);
+          setAttemptsLeft(0);
+          alert(`🔒 ${data.message}`);
+        } else if (response.status === 401) {
+          // Invalid credentials with attempt count
+          setIsLocked(false);
+          if (data.attemptsLeft !== undefined) {
+            setAttemptsLeft(data.attemptsLeft);
+            alert(`❌ ${data.message}`);
+          } else {
+            alert(`❌ ${data.message || 'Invalid credentials'}`);
+          }
+        } else {
+          // Other errors
+          throw new Error(data.message || 'Something went wrong');
+        }
+        return;
       }
 
       // 3. If login is successful, use the real data from the backend
       if (data.success) {
+        // Reset attempt tracking on successful login
+        setAttemptsLeft(null);
+        setIsLocked(false);
+        
         // Call the login function from your AuthContext with the token and user data
         login(data.token, data.user); 
         
-        alert('Login successful! Welcome back.');
+        alert('✅ Login successful! Welcome back.');
         onClose();
         
         // Reset form
