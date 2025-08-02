@@ -213,9 +213,16 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
               <span className="ml-2 text-gray-900">Remember me</span>
             </label>
 
-            <a href="#" className="text-sm text-indigo-600 hover:underline">
-              Forgot your password?
-            </a>
+            <button
+                  type="button"
+                     onClick={() => {
+                       onClose();      // close the modal
+                  navigate('/forgot-password'); // go to the forgot password page
+                         }}
+                     className="text-sm text-indigo-600 hover:underline"
+                                                                >
+                                 Forgot your password?
+                  </button>
           </div>
 
           <button

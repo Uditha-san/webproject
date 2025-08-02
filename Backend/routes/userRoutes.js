@@ -4,24 +4,28 @@ import {
   getUserData,
   storeRecentSearchCities
 } from '../controllers/userController.js';
+
 import {
   login,
-  register
+  register,
+  verifyEmail,
+  requestPasswordReset,
+  resetPassword,
 } from '../controllers/authController.js';
-
-import { verifyEmail } from '../controllers/authController.js';
 
 const userRouter = express.Router();
 
 // Auth routes
 userRouter.post('/register', register);
 userRouter.post('/login', login);
+userRouter.get('/verify-email', verifyEmail);
 
 // User routes (protected)
 userRouter.get('/', protect(), getUserData);
 userRouter.post('/store-recent-search', protect(), storeRecentSearchCities);
 
-userRouter.get('/verify-email', verifyEmail);
-
+// Password reset routes
+userRouter.post('/forgot-password', requestPasswordReset);
+userRouter.post('/reset-password', resetPassword);
 
 export default userRouter;

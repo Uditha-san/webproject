@@ -17,6 +17,8 @@ import About from './pages/About.jsx';
 import Experience from './pages/Experience.jsx';
 import VerifyEmail from './components/VerifyEmail.jsx';
 import { Toaster } from 'react-hot-toast';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const App = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -33,6 +35,9 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/verify-email' element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          
           <Route path='/rooms' element={<AllRooms />} />
           <Route path='/rooms/:id' element={<RoomDetails />} />
           <Route path='/my-bookings' element={<MyBookings />} />

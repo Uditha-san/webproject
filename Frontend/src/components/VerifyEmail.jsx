@@ -23,6 +23,7 @@ const VerifyEmail = () => {
         toast.success('Email verified successfully!');
         setTimeout(() => navigate('/'), 3000); // Redirect after 3 seconds
       } catch (err) {
+        
         toast.error(err.message || 'Invalid or expired verification link');
       } finally {
         setLoading(false);

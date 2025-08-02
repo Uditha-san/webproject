@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 import sendEmail from '../utils/sendEmail.js';
+import { Console } from 'console';
 
 // Register
 export const register = async (req, res) => {
@@ -24,8 +25,6 @@ export const register = async (req, res) => {
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const verificationExpires = new Date(Date.now() + 60 * 60 * 1000);
 
-
-
     const newUser = new User({
       username,
       email,
@@ -39,7 +38,6 @@ export const register = async (req, res) => {
 
     await newUser.save();
 
-    // Send verification email
     const verifyURL = `http://localhost:5173/verify-email?token=${verificationToken}`;
     const html = `
       <h2>Email Verification</h2>
@@ -47,6 +45,7 @@ export const register = async (req, res) => {
       <a href="${verifyURL}">Verify Email</a>
       <p>This link will expire in 1 hour.</p>
     `;
+
     await sendEmail(email, 'Verify your email', html);
 
     res.status(201).json({
@@ -112,6 +111,7 @@ export const verifyEmail = async (req, res) => {
       emailVerificationToken: token,
       emailVerificationExpires: { $gt: new Date() }
     });
+    console.log(User);
 
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid or expired token' });
@@ -123,7 +123,84 @@ export const verifyEmail = async (req, res) => {
 
     await user.save();
 
+    
+
+    
+
+    
+
     res.status(200).json({ success: true, message: 'Email verified successfully. You can now log in.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error', error: err.message });
+  }
+};
+
+// Request Password Reset
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Email is required' });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpires = new Date(Date.now() + 60 * 60 * 1000);
+
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = resetTokenExpires;
+    await user.save();
+
+    const resetURL = `http://localhost:5173/reset-password?token=${resetToken}`;
+    const html = `
+      <h2>Password Reset</h2>
+      <p>Click below to reset your password:</p>
+      <a href="${resetURL}">Reset Password</a>
+      <p>This link will expire in 1 hour.</p>
+    `;
+
+    await sendEmail(email, 'Reset Your Password', html);
+
+    res.status(200).json({ success: true, message: 'Password reset email sent' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error', error: err.message });
+  }
+};
+
+// Reset Password
+export const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ success: false, message: 'Token and new password are required' });
+  }
+
+  try {
+    const user = await User.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+    }
+
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    await user.save();
+
+    
+
+    res.status(200).json({ success: true, message: 'Password reset successful' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }

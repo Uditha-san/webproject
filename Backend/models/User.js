@@ -13,7 +13,12 @@ const userSchema = new mongoose.Schema({
     // New fields for email verification
   isVerified: { type: Boolean, default: false },
   emailVerificationToken: { type: String },
-  emailVerificationExpires: { type: Date }
+  emailVerificationExpires: { type: Date },
+
+  //  Password reset
+  resetToken: { type: String },
+  resetTokenExpires: { type: Date }
+
   
 }, {timestamps: true});
 
