@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./Backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb+srv://lavindubinuwara1:lvrnsj1023@webapplicationdevelopme.6n5bkv8.mongodb.net/?retryWrites=true&w=majority&appName=WebApplicationDevelopmentHotelBooking
+      - JWT_SECRET=your_very_secret_key
+      - CLERK_PUBLISHABLE_KEY=pk_test_Y29tcG9zZWQtaGF3ay00Ny5jbGVyay5hY2NvdW50cy5kZXYk
+      - CLERK_SECRET_KEY=sk_test_OeDQmlj49EX8DFdqNYc7eMnMhtTV1YZOmvHGCahkGw
+      - CLERK_WEBHOOK_SECRET=whsec_hc3xmZFa8TdcxPC7qxO+8fAwp99FFsfX
+      - CLOUDINARY_CLOUD_NAME=dqemeis65
+      - CLOUDINARY_API_KEY=616361781643661
+      - CLOUDINARY_API_SECRET=xxGJuOwlM43_1HX9XFe29b8Y3EY
+      - SENDER_EMAIL=ksandeepa1428@gmail.com
+      - SMTP_USER=93a1a7001@smtp-brevo.com
+      - SMTP_PASS=xsmtpsib-0a6573945536ef9c95241003d05f5c8e4b5a29a9eef0c246a3c23bfa9bd69afa-fW05EzOc26x9SHbK
+      - EMAIL_USER=pgksandeepa@gmail.com
+      - EMAIL_PASS=eijs ftdv xvip wqef
+    depends_on:
+      - mongo
+    volumes:
+      - ./Backend:/usr/src/app
+      - /usr/src/app/node_modules
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  frontend:
+    build: ./Frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_CLERK_PUBLISHABLE_KEY=pk_test_Y29tcG9zZWQtaGF3ay00Ny5jbGVyay5hY2NvdW50cy5kZXYk
+    depends_on:
+      - backend
+    volumes:
+      - ./Frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
