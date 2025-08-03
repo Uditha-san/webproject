@@ -117,7 +117,7 @@ export const userDummyData = [
   {
     _id: "user_2unqyL4diJFP1E3pIBnasc7w8hP",
     username: "Dilshan wijesooriya",
-    email: "user.greatstack@gmail.com",
+    email: "user.dilshanwijek@gmail.com",
     image:
       "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
     role: "hotelOwner",
@@ -129,7 +129,7 @@ export const userDummyData = [
   {
     _id: "user_2unqyL4diJFP1E3pIBnasc7w8hP",
     username: "Akila jayawardhana",
-    email: "user.greatstack@gmail.com",
+    email: "user.akilajayawardhana@gmail.com",
     image:
       "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
     role: "hotelOwner",
@@ -141,7 +141,7 @@ export const userDummyData = [
   {
     _id: "user_2unqyL4diJFP1E3pIBnasc7w8hP",
     username: "Shane Daniel",
-    email: "user.greatstack@gmail.com",
+    email: "user.danielshane@gmail.com",
     image:
       "https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQvaW1nXzJ2N2c5YVpSSEFVYVUxbmVYZ2JkSVVuWnFzWSJ9",
     role: "hotelOwner",
