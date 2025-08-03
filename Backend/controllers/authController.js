@@ -1,10 +1,9 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 import { validationResult } from 'express-validator';
-
-
+import crypto from 'crypto';
+import transporter from '../configs/nodemailer.js'; // Make sure this path is correct
 
 // Register
 export const register = async (req, res) => {
@@ -12,12 +11,9 @@ export const register = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ success: false, errors: errors.array() });
   }
+  
   const { firstName, lastName, email, password, phone, dateOfBirth } = req.body;
-  const username = `${firstName} ${lastName}`; // Create username from first and last name
-
-  if (!firstName || !lastName || !email || !password) {
-    return res.status(400).json({ success: false, message: 'Required fields are missing' });
-  }
+  const username = `${firstName} ${lastName}`;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -27,30 +23,44 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // 1. Generate verification token
+    const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+    const emailVerificationExpires = Date.now() + 3600000; // 1 hour from now
+
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      // ADDED: Save new fields to the database
       phone,
       dateOfBirth,
+      emailVerificationToken,
+      emailVerificationExpires,
     });
 
     await newUser.save();
 
-    const token = generateToken(newUser._id, newUser.role);
-
+    // 2. Send verification email
+    const verificationUrl = `http://localhost:5173/verify-email?token=${emailVerificationToken}`;
+    const mailOptions = {
+      from: process.env.SENDER_EMAIL,
+      to: newUser.email,
+      subject: 'Verify Your Email for IM-Hotel Booking',
+      html: `
+        <h2>Welcome to the platform!</h2>
+        <p>Please click the link below to verify your email address:</p>
+        <a href="${verificationUrl}" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a>
+        <p>This link will expire in one hour.</p>
+      `,
+    };
+    
+    await transporter.sendMail(mailOptions);
+    
+    // 3. Respond to user
     res.status(201).json({
       success: true,
-      message: 'User registered successfully',
-      token,
-      user: {
-        _id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-        role: newUser.role,
-      },
+      message: 'Registration successful! Please check your email to verify your account.',
     });
+
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
@@ -70,6 +80,11 @@ export const login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
+    // Check if email is verified
+    if (!user.isVerified) {
+        return res.status(403).json({ success: false, message: 'Please verify your email before logging in.' });
+    }
+
     // Check if account is locked
     if (user.blockUntil && user.blockUntil > Date.now()) {
       const remainingTime = Math.ceil((user.blockUntil - Date.now()) / (1000 * 60 * 60));
@@ -84,13 +99,9 @@ export const login = async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     
     if (!isPasswordCorrect) {
-      // Increment login attempts
       await user.incLoginAttempts();
-      
-      // Reload user to get updated attempt count
       const updatedUser = await User.findById(user._id);
       
-      // Check if account is now locked
       if (updatedUser.blockUntil && updatedUser.blockUntil > Date.now()) {
         return res.status(423).json({ 
           success: false, 
@@ -100,7 +111,7 @@ export const login = async (req, res) => {
         });
       }
       
-      const attemptsLeft = 5 - updatedUser.loginAttempts;
+      const attemptsLeft = 5 - (updatedUser.loginAttempts || 0);
       return res.status(401).json({ 
         success: false, 
         message: `Invalid credentials. ${attemptsLeft} attempts remaining before account lockout.`,
@@ -108,7 +119,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // Successful login - reset login attempts
     if (user.loginAttempts > 0) {
       await user.resetLoginAttempts();
     }
@@ -129,4 +139,34 @@ export const login = async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
+};
+
+// Verify Email
+export const verifyEmail = async (req, res) => {
+    try {
+      const { token } = req.body;
+  
+      if (!token) {
+          return res.status(400).json({ success: false, message: 'Verification token is missing.' });
+      }
+  
+      const user = await User.findOne({
+        emailVerificationToken: token,
+        emailVerificationExpires: { $gt: Date.now() },
+      });
+  
+      if (!user) {
+        return res.status(400).json({ success: false, message: 'Invalid or expired verification token.' });
+      }
+  
+      user.isVerified = true;
+      user.emailVerificationToken = undefined;
+      user.emailVerificationExpires = undefined;
+      await user.save();
+  
+      res.status(200).json({ success: true, message: 'Email verified successfully. You can now log in.' });
+  
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
 };
