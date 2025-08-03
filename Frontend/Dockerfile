@@ -17,7 +17,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Set permissions for nginx
+#     Set permissions for nginx
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chmod -R 755 /usr/share/nginx/html
 
