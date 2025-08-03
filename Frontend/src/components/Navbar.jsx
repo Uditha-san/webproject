@@ -76,14 +76,16 @@ const Navbar = ({ onLoginClick, onRegisterClick }) => {
               />
             </Link>
           ))}
-          <button
-            className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
-              isScrolled ? "text-black" : "text-white"
-            } transition-all`}
-            onClick={() => navigate("/dashboard")}
-          >
-            Dashboard
-          </button>
+          {user?.role === 'hotelOwner' && (
+             <button
+             className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
+                 isScrolled ? "text-black" : "text-white"
+                   } transition-all`}
+             onClick={() => navigate("/dashboard")}
+                    >
+              Dashboard
+               </button>
+            )}
         </div>
 
         {/* Desktop Right */}
@@ -160,14 +162,14 @@ const Navbar = ({ onLoginClick, onRegisterClick }) => {
             </Link>
           ))}
 
-          {user && (
-            <button
-              className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all"
+          {user?.role === 'hotelOwner' && (
+                   <button
+                 className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all"
               onClick={() => navigate("/dashboard")}
-            >
-              Dashboard
-            </button>
-          )}
+                  >
+                       Dashboard
+                 </button>
+                       )}
 
           {!user && (
             <button
